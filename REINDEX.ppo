@@ -1,0 +1,50 @@
+FUNCTION REINDEX()
+MEMVAR GETLIST
+Scroll() ; SetPos(0,0) ; ReadKill(.T.) ; GetList := {} ; ( GetList )
+Set( 5, 2000 )
+__SetCentury( "ON" )
+M->TIME = SPACE(08)
+M->TIME = TIME()
+
+DevPos( 0, 25 ) ; DevOut( "W2G DATABASE MAINTENANCE PROGRAM" )
+DevPos( 2, 10 ) ; DevOut( "PROGRAM START TIME: " + M->TIME )
+DevPos( 4, 10 ) ; DevOut( "PACKING PAYEE DATABASE. ONE MOMENT PLEASE..." )
+dbUseArea( .F.,, "payee",, if(.F. .OR. .F., !.F., NIL), .F.,, )
+__dbPack()
+
+DevPos( 6, 10 ) ; DevOut( "BUILDING PAYEE INDEXES. ONE MOMENT PLEASE..." )
+
+dbCreateIndex( "payee.ntx", "payee->record_id", {|| payee->record_id}, if( .F., .T., NIL ) )
+
+dbCreateIndex( "name.ntx", "padr(payee->last_name,25) + padr(payee->first_name,12) + padr(payee->middle_int,2)", {|| padr(payee->last_name,25) + padr(payee->first_name,12) + padr(payee->middle_int,2)}, if( .F., .T., NIL ) )
+
+DevPos( 8, 10 ) ; DevOut( "PACKING TICKET DATABASE. ONE MOMENT PLEASE..." )
+
+dbUseArea( .F.,, "ticket",, if(.F. .OR. .F., !.F., NIL), .F.,, )
+__dbPack()
+
+DevPos( 10, 10 ) ; DevOut( "BUILDING TICKET INDEXES. ONE MOMENT PLEASE..." )
+
+dbCreateIndex( "ticket.ntx", "ticket->record_id", {|| ticket->record_id}, if( .F., .T., NIL ) )
+
+dbCreateIndex( "batchid.ntx", "dtoc(ticket->batch_date) + str(ticket->batch_num,4) + ticket->record_id", {|| dtoc(ticket->batch_date) + str(ticket->batch_num,4) + ticket->record_id}, if( .F., .T., NIL ) )
+
+dbCreateIndex( "btchdate.ntx", "ticket->batch_date", {|| ticket->batch_date}, if( .F., .T., NIL ) )
+
+dbCreateIndex( "bdate.ntx", "ticket->batch_date", {|| ticket->batch_date}, if( .F., .T., NIL ) )
+
+DevPos( 12, 10 ) ; DevOut( "PACKING BATCH CONTROL DATABASE. ONE MOMENT PLEASE..." )
+
+dbUseArea( .F.,, "batchctl",, if(.F. .OR. .F., !.F., NIL), .F.,, )
+__dbPack()
+
+DevPos( 14, 10 ) ; DevOut( "BUILDING BATCH CONTROL INDEXES. ONE MOMENT PLEASE..." )
+
+dbCreateIndex( "batchctl.ntx", "dtoc(batchctl->batch_date) + str(batchctl->batch_num,4)", {|| dtoc(batchctl->batch_date) + str(batchctl->batch_num,4)}, if( .F., .T., NIL ) )
+
+M->TIME = TIME()
+
+DevPos( 16, 10 ) ; DevOut( "PROGRAM END TIME: " + M->TIME )
+
+dbCloseAll()
+RETURN (NIL)

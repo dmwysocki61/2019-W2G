@@ -1,0 +1,11 @@
+hbct.hbc
+hbxpp.hbc
+hbnf.hbc
+-W3
+-ES0
+-B
+-A
+-V
+-W
+-lhwgdebug
+w2g.PRG

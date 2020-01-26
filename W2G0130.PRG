@@ -1,0 +1,71 @@
+* Program Name: W2G130
+* Author:       David M. Wysocki
+* Company:      Diversified Technical Service, Inc.
+* Client:       Palm Beach Kennal Club
+* Purpose:      PAYEE edit control module / menu.
+*
+*
+function w2g0130()
+
+#define pESC 27
+
+MEMVAR GETLIST
+CLOSE DATABASES
+SELECT 1
+USE PAYEE
+SELECT 2
+USE TICKET INDEX TICKET
+SELECT 3
+USE AUDIT
+SELECT 1
+PUBLIC REC_ID   := SPACE(09)
+PUBLIC L_NAME   := SPACE(15)
+PUBLIC F_NAME   := SPACE(15)
+PUBLIC INIT     := SPACE(02)
+PUBLIC ADDRESS  := SPACE(30)
+PUBLIC CITY     := SPACE(25)
+PUBLIC STATE    := SPACE(02)
+PUBLIC ZIP      := SPACE(05)
+PUBLIC FIRST_ID := SPACE(15)
+PUBLIC SCND_ID  := SPACE(15)
+PUBLIC NAME     := SPACE(32)
+PUBLIC PRNT_CNT := SPACE(01)
+PUBLIC CHOICE   := SPACE(01)
+
+DO WHILE .T.
+   CLEAR
+   @ 0,20 SAY "W2G REPORTING/EDITING"
+   @ 2,15 SAY "ENTER S TO ACCESS BY SOCIAL SECURITY NUMBER."
+   @ 4,15 SAY "ENTER N TO ACCESS BY PAYEE LAST NAME."
+   @ 6,15 SAY "ENTER X TO EXIT."
+   M->CHOICE = ' '
+   DO WHILE .NOT. M->CHOICE $'SNX'
+      M->CHOICE = ' '
+      @ 8,15 GET M->CHOICE PICTURE '!'
+      READ
+   ENDDO
+   DO CASE
+      CASE M->CHOICE = 'X'
+           CLOSE DATABASES
+           CLEAR
+           RETURN (NIL)
+
+      CASE M->CHOICE = 'S'
+           DO W2G0280
+
+      CASE M->CHOICE = 'N'
+           DO W2G0290
+   ENDCASE
+   if (lastkey() == pESC)
+       exit
+   endif
+   IF M->REC_ID = SPACE(09)
+      LOOP
+   ELSE
+      DO W2G0355
+   ENDIF
+ENDDO
+CLOSE DATABASES
+CLEAR
+RETURN (NIL)
+* Eof: w2g0130.prg

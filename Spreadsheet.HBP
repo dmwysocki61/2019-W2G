@@ -1,0 +1,16 @@
+hbqt.hbc
+hbnf.hbc
+hbct.hbc
+-W3
+-ES2
+-B
+-A
+-V
+-W
+Spreadsheet.PRG
+fileopen.prg
+loadbatch.prg
+EditBatchSt.prg
+EditBatchGross.prg
+EditBatchFed.prg
+EditBatchCount.prg
